@@ -8,6 +8,7 @@ export class UsersRoutes {
     const controller = new UserController();
 
     router.get("/users", controller.listar); // listando todos os usuarios
+    router.post("/users", controller.cadastrar); // cadastrando um usuario
 
     return router;
   }

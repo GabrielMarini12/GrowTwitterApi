@@ -1,6 +1,9 @@
 import express from "express";
 import { envs } from "./envs";
 import { UsersRoutes } from "./routes/users.routes";
+import { TweetsRoutes } from "./routes/tweets.routes";
+import { LikesRoutes } from "./routes/likes.routes";
+import { RetweetsRoutes } from "./routes/retweets.routes";
 
 const app = express();
 app.use(express.json());
@@ -13,5 +16,9 @@ app.get("/", (_, res) => {
 });
 
 app.use(UsersRoutes.bind());
+app.use(TweetsRoutes.bind());
+app.use(LikesRoutes.bind());
+app.use(RetweetsRoutes.bind());
+app.use(TweetsRoutes.bind());
 
 app.listen(envs.PORT, () => console.log("Server is running"));

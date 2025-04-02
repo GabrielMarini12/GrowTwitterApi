@@ -7,8 +7,11 @@ export class UsersRoutes {
 
     const controller = new UserController();
 
-    router.get("/users", controller.listar); // listando todos os usuarios
-    router.post("/users", controller.cadastrar); // cadastrando um usuario
+    router.get("/users", controller.listar);
+    router.post("/users", controller.cadastrar);
+    router.get("/users/:id", controller.listarPorId);
+    router.put("/users/:id", controller.atualizarPorId);
+    router.delete("/users/:id", controller.deletarPorId);
 
     return router;
   }

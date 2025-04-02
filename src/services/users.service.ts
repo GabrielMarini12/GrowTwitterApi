@@ -1,10 +1,12 @@
 import { User } from "@prisma/client";
 import { prismaClient } from "../database/prisma.client";
-import { ListarUsersDto, CadastrarUserDto } from "../dtos/users.dto";
-import { validate as isValidUid } from "uuid";
+import {
+  ListarUsersDto,
+  CadastrarUserDto,
+  AtualizarUserDto,
+} from "../dtos/users.dto";
 import { HTTPError } from "../utils/http.error";
 
-// Tipos Utilitários TS
 type UserParcial = Omit<User, "authToken" | "senha">;
 
 export class UsersService {
@@ -39,8 +41,6 @@ export class UsersService {
   }
 
   public async listar({ nome }: ListarUsersDto): Promise<UserParcial[]> {
-    // ...
-
     const usersDB = await prismaClient.user.findMany({
       where: {
         nome: {
@@ -58,5 +58,60 @@ export class UsersService {
     });
 
     return usersDB;
+  }
+  public async listarPorId(idusuario: number): Promise<UserParcial> {
+    const user = await prismaClient.user.findUnique({
+      where: { id: idusuario },
+      omit: {
+        authToken: true,
+        senha: true,
+      },
+    });
+
+    if (!user) {
+      throw new HTTPError(404, "Usuario não encontrado");
+    }
+
+    return user;
+  }
+
+  public async atualizar({
+    id,
+    email,
+    username,
+    nome,
+    senha,
+  }: AtualizarUserDto): Promise<UserParcial> {
+    await this.listarPorId(id);
+
+    const usuarioAtualizado = await prismaClient.user.update({
+      where: { id },
+      data: {
+        email,
+        username,
+        nome,
+        senha,
+      },
+      omit: {
+        authToken: true,
+        senha: true,
+      },
+    });
+
+    return usuarioAtualizado;
+  }
+
+  public async excluir(idUsuario: number): Promise<UserParcial> {
+    await this.listarPorId(idUsuario);
+
+    const UserExcluido = await prismaClient.user.delete({
+      where: { id: idUsuario },
+      omit: {
+        authToken: true,
+        senha: true,
+      },
+    });
+
+    return UserExcluido;
   }
 }

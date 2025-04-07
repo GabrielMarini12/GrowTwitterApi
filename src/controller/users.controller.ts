@@ -1,95 +1,100 @@
 import { Request, Response } from "express";
-import { UsersService } from "../services/users.service";
+import { UsersService } from "../service/user.service";
 import { onError } from "../utils/on-error";
 
-export class UserController {
+export class UsersController {
   public async listar(req: Request, res: Response): Promise<void> {
     try {
-      const { nome } = req.query;
+      const { name } = req.query;
 
       const service = new UsersService();
       const resultado = await service.listar({
-        nome: nome as string | undefined,
+        name: name as string | undefined,
       });
 
       res.status(200).json({
         sucesso: true,
-        mensagem: "Alunos listados com sucesso",
+        mensagem: "Usuários listados com sucesso",
         dados: resultado,
       });
     } catch (error) {
       onError(error, res);
     }
   }
+
+  public async ListarPorId(req: Request, res: Response): Promise<void> {
+    try {
+      const { id } = req.params;
+
+      const service = new UsersService();
+      const resultado = await service.ListarPorId(Number(id));
+
+      res.status(200).json({
+        sucesso: true,
+        mensagem: "Usuário encontrado",
+        dados: resultado,
+      });
+    } catch (error) {
+      onError(error, res);
+    }
+  }
+
   public async cadastrar(req: Request, res: Response): Promise<void> {
     try {
-      const { nome, email, username, senha } = req.body;
+      const { name, email, username, senha } = req.body;
 
       const service = new UsersService();
       const resultado = await service.cadastrar({
-        nome,
+        name,
         email,
-        senha,
         username,
+        senha,
       });
 
       res.status(201).json({
         sucesso: true,
-        mensagem: "Novo usuario cadastrado",
+        mensagem: "Novo usuário cadastrado",
         dados: resultado,
       });
     } catch (error) {
       onError(error, res);
     }
   }
-  public async listarPorId(req: Request, res: Response): Promise<void> {
-    try {
-      const { id } = req.params;
 
-      const idNumber = Number(id);
-
-      const service = new UsersService();
-      const resultado = await service.listarPorId(idNumber);
-
-      res.status(200).json({
-        sucesso: true,
-        mensagem: "Usuario encontrado",
-        dados: resultado,
-      });
-    } catch (error) {
-      onError(error, res);
-    }
-  }
   public async atualizarPorId(req: Request, res: Response): Promise<void> {
     try {
-      const { nome, email, username, senha } = req.body;
+      const { id } = req.params;
+      const { name, email, username, senha } = req.body;
 
       const service = new UsersService();
       const resultado = await service.atualizar({
-        id: req.userLogado.id,
-        nome,
+        id: Number(id),
+        name,
         email,
-        senha,
         username,
+        senha,
       });
 
       res.status(200).json({
         sucesso: true,
-        mensagem: "Usuario Atualizado",
+        mensagem: "Usuário atualizado",
         dados: resultado,
       });
     } catch (error) {
       onError(error, res);
     }
   }
-  public async deletarPorId(req: Request, res: Response): Promise<void> {
+
+  public async deletar(req: Request, res: Response): Promise<void> {
     try {
+      const { id } = req.params;
+
       const service = new UsersService();
-      const resultado = await service.excluir(req.userLogado.id);
+      const resultado = await service.excluir(Number(id));
 
       res.status(200).json({
         sucesso: true,
-        mensagem: "Usuario excluido com sucesso",
+        mensagem: "Usuário excluído",
         dados: resultado,
       });
     } catch (error) {

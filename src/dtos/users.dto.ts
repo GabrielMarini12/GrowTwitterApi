@@ -1,11 +1,12 @@
-export interface CadastrarUserDto {
-  nome: string;
-  username: string;
+export interface CadastrarUsersDto {
+  name: string;
   email: string;
+  username: string;
   senha: string;
 }
+
 export interface ListarUsersDto {
-  nome?: string;
+  name?: string;
 }
 
-export type AtualizarUserDto = Partial<CadastrarUserDto> & { id: number };
+export type AtualizarUsersDto = Partial<CadastrarUsersDto> & { id: number };

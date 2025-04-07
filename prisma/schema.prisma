@@ -7,64 +7,66 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id       Int    @id @default(autoincrement())
-  nome     String @db.VarChar(100)
-  email    String @unique @db.VarChar(200)
-  username String @unique @db.VarChar(100)
-  senha    String @db.Text
-  authToken     String?  @map("auth_token") @db.Uuid
+model Users {
+  id        Int        @id @default(autoincrement())
+  name      String     @db.VarChar(50)
+  email     String     @unique @db.VarChar(100)
+  username  String     @unique @db.VarChar(100)
+  senha     String
+  authToken String?    @map("auth_Token") @db.Uuid
+  following Follower[] @relation("Followers")
+  followers Follower[] @relation("Following")
+  likes     Like[]
+  retweets  Retweet[]
+  tweets    Tweet[]
 
-  tweets     Tweet[]
-  likes      Like[]
-  retweets   Retweet[]
-  seguindo   Seguidor[] @relation("UserSeguindo")
-  seguidores Seguidor[] @relation("UserSeguidor")
-}
-
-enum TipoTweet {
-  TWEET
-  RETWEET
+  @@map("usuario")
 }
 
 model Tweet {
   id       Int       @id @default(autoincrement())
   conteudo String?   @db.VarChar(300)
-  tipo     TipoTweet
-
-  idUser Int
-  user   User @relation(fields: [idUser], references: [id])
-
+  tipo     TweetType
+  userId   Int
   likes    Like[]
   retweets Retweet[]
+  user     Users     @relation(fields: [userId], references: [id])
+
+  @@map("tweets")
 }
 
 model Like {
-  idUser  Int
-  idTweet Int
+  userId  Int
+  tweetId Int
+  tweet   Tweet @relation(fields: [tweetId], references: [id])
+  user    Users @relation(fields: [userId], references: [id])
 
-  user  User  @relation(fields: [idUser], references: [id])
-  tweet Tweet @relation(fields: [idTweet], references: [id])
-
-  @@id([idUser, idTweet])
+  @@unique([userId, tweetId])
+  @@map("likes")
 }
 
 model Retweet {
-  idUser  Int
-  idTweet Int
+  id      Int   @id @default(autoincrement())
+  userId  Int
+  tweetId Int
+  tweet   Tweet @relation(fields: [tweetId], references: [id])
+  user    Users @relation(fields: [userId], references: [id])
 
-  user  User  @relation(fields: [idUser], references: [id])
-  tweet Tweet @relation(fields: [idTweet], references: [id])
-
-  @@id([idUser, idTweet])
+  @@unique([userId, tweetId])
+  @@map("retweets")
 }
 
-model Seguidor {
-  idUser     Int
-  idSeguidor Int
+model Follower {
+  userId     Int
+  followerId Int
+  follower   Users @relation("Followers", fields: [followerId], references: [id])
+  user       Users @relation("Following", fields: [userId], references: [id])
 
-  user     User @relation("UserSeguindo", fields: [idUser], references: [id])
-  seguidor User @relation("UserSeguidor", fields: [idSeguidor], references: [id])
+  @@unique([userId, followerId])
+  @@map("followers")
+}
 
-  @@id([idUser, idSeguidor])
+enum TweetType {
+  TWEET
+  RETWEET
 }

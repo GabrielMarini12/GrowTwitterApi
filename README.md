@@ -26,3 +26,6 @@ API do prjeto Twitter (Growdev)
     - npx tsc --init
     - npx tsc
 
+# Deploy
+
+https://growtwitterapi-4jdn.onrender.com

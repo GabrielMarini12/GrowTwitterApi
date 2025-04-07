@@ -1,6 +1,6 @@
 import express, { request } from "express";
 import { envs } from "./envs";
-import { UsersRoutes } from "./routes/user.routes";
+import { UsersRoutes } from "./routes/users.routes";
 import { TweetsRoutes } from "./routes/tweets.routes";
 import { RetweetsRoutes } from "./routes/retweets.routes";
 import { LikesRoutes } from "./routes/likes.routes";

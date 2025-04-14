@@ -5,6 +5,7 @@ import { TweetsRoutes } from "./routes/tweets.routes";
 import { RetweetsRoutes } from "./routes/retweets.routes";
 import { LikesRoutes } from "./routes/likes.routes";
 import { FollowersRoutes } from "./routes/followers.routes";
+import { AuthRoutes } from "./routes/auth.routes";
 
 const app = express();
 app.use(express.json());
@@ -16,6 +17,7 @@ app.get("/", (req, res, next) => {
   });
 });
 
+app.use(AuthRoutes.bind());
 app.use(UsersRoutes.bind());
 app.use(RetweetsRoutes.bind());
 app.use(LikesRoutes.bind());
